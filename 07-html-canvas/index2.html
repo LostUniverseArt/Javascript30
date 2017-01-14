@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HTML5 Canvas Extra</title>
+</head>
+<body>
+<canvas id="draw" width="800" height="800"></canvas>
+<script>
+    const canvas = document.querySelector('#draw');
+    //    we don't draw on the canvas, we draw on the context
+    const ctx = canvas.getContext('2d');
+
+    //    resize the canvas to the size of the window
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    /*
+     https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/strokeStyle
+     https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap
+     https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
+     https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineWidth
+     */
+
+    ctx.strokeStyle = '#bada55';
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.lineWidth = 100;
+
+    //    blend modes
+    //    https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
+    //    ctx.globalCompositeOperation = 'luminosity';
+
+    //    flag to enable/disable drawing on the canvas
+    let isDrawing = false;
+    let lastX = 0;
+    let lastY = 0;
+    let hue = 0;
+    let direction = true;
+
+    function draw(e) {
+        if (!isDrawing) return; // stop the function if not mouse down
+//        console.log(e);
+        ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.stroke();
+//        lastX = e.offsetX;
+//        lastY = e.offsetY;
+//        es6 allows you to set multiple variables in one line
+//        this is called 'destructuring an array'
+        [lastX, lastY] = [e.offsetX, e.offsetY];
+
+        hue++;
+//        even though hsl will still work above 360 we
+//        can reset it to zero
+        if (hue >= 360) {
+            hue = 0;
+        }
+
+        if (ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
+            direction = !direction;
+        }
+
+        direction ? ctx.lineWidth++ : ctx.lineWidth--;
+
+    }
+    // mousedown is fired before mousemove
+    canvas.addEventListener('mousedown', (e) => {
+//        we update the lastX and lastY positions so that the line is
+//        drawn from the point of the click.
+        isDrawing = true;
+        [lastX, lastY] = [e.offsetX, e.offsetY];
+    });
+
+    canvas.addEventListener('mousemove', draw);
+
+    canvas.addEventListener('mouseup', () => isDrawing = false);
+    canvas.addEventListener('mouseout', () => isDrawing = false); //mouse outside window
+
+</script>
+
+<style>
+    html, body {
+        margin: 0;
+    }
+</style>
+
+</body>
+</html>
