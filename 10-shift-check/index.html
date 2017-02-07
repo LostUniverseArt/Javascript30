@@ -101,12 +101,18 @@ When a user clicks a checkbox, holds Shift, and then clicks another checkbox a f
         <p>Don't forget to tweet your result!</p>
     </div>
 
+    <div class="item">
+        <button id="btnUnset">Unset all</button>
+    </div>
+
 </div>
 
 <script>
     // this selects all the inputs of type checkboxes inside the class inbox
     const checkboxes = document.querySelectorAll('.inbox input[type="checkbox"]');
     //console.log(checkboxes);
+
+    const btn = document.querySelector('#btnUnset');
 
     // variable to hold the last checkbox selected
     let lastChecked;
@@ -118,7 +124,7 @@ When a user clicks a checkbox, holds Shift, and then clicks another checkbox a f
         if(e.shiftKey && this.checked){
             // loop over every single checkbox
             checkboxes.forEach(checkbox => {
-               console.log(checkbox);
+//               console.log(checkbox);
                if(checkbox === this || checkbox === lastChecked){
                    // we want it to work both by picking the first and then last or
                    // last and then the first of the selection so we set
@@ -132,13 +138,20 @@ When a user clicks a checkbox, holds Shift, and then clicks another checkbox a f
             });
         }
 
-
         lastChecked = this;
 
     }
 
+    function btnOnClick() {
+//        console.log("Got here");
+        checkboxes.forEach(checkbox => {
+           checkbox.checked = false;
+        });
+    }
+
     //add event listener for clicking checkbox
     checkboxes.forEach(checkbox => checkbox.addEventListener('click', handleCheck));
+    btn.addEventListener('click', btnOnClick);
 
 
 </script>
